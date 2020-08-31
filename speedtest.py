@@ -3,7 +3,8 @@ from lenstra_algorithm.lenstra import lenstra
 from time import time
 from datetime import datetime
 
-algorithms = [ecm]
+
+algorithms = [lenstra]
 input_file = 'primeproducts.txt'
 output_file = 'results.txt'
 batch_size = 10
