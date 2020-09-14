@@ -6,13 +6,12 @@ import geckodriver_autoinstaller
 
 
 batch_size = 5
+per_bit = 1
 min_length = 8
-max_length = 250
+max_length = 12
 number_file = 'primeproducts.txt'
 
-geckodriver_autoinstaller.install()  # Check if the current version of geckodriver exists
-                                     # and if it doesn't exist, download it automatically,
-                                     # then add geckodriver to path
+geckodriver_autoinstaller.install()  # Check if the current version of geckodriver exists and if it doesn't exist, download it automatically, then add geckodriver to path
 
 def file_len(filename):
     with open(filename) as f:
@@ -44,12 +43,12 @@ def export_prime_products(prime_products, number_file=number_file):
         for prime_product in prime_products:
             f.write(prime_product + '\n')
 
-def main(batch_size=batch_size, max_length=max_length, min_length=min_length, number_file=number_file):
+def main(size=per_bit*batch_size, max_length=max_length, min_length=min_length, number_file=number_file):
     file_length = file_len(number_file)
-    for i in range(min_length + (file_length//batch_size), max_length + 1):
+    for i in range(min_length + (file_length//size), max_length + 1):
         numbers = []
         bit_length = i
-        for j in range(batch_size):
+        for j in range(size):
             # rather hacky but it helpes and the programm almost never crashes
             try:
                 numbers.append(str(make_int(get_number(bit_len=bit_length))))
@@ -68,9 +67,11 @@ def sort_em(number_file=number_file):
         numbers = [int(line.strip('\n')) for line in f.readlines()]
     numbers = sorted(numbers)
     i = 1
-    while i < len(numbers) - 1:
+    while i < len(numbers):
+        print(numbers[i], i)
         if numbers[i] == numbers[i-1]:
             del numbers[i]
+            i -= 1
         i += 1
     numbers = [str(number) for number in numbers]
     open(number_file, 'w').close()

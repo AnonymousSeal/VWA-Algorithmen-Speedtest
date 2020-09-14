@@ -1,7 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 from time import time
 from datetime import datetime
-from lenstra_algorithm.lenstra import lenstra
+from primefac import *
+from subprocess import check_output
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime, BigInteger
 
 #########################################
@@ -12,7 +13,7 @@ device = 'MacBook Pro (Mid 2014): 2.8 GHz Dual-Core Intel Core i5'
 
 #########################################
 
-db = create_engine('sqlite:///VWA-Algorithmus_Speedtest.db')
+db = create_engine('sqlite:///VWA-Algorithmus-Speedtest.db')
 db.connect()
 metadata = MetaData()
 
@@ -21,6 +22,7 @@ results = Table('results', metadata,
    Column('prime1', String, nullable=False),
    Column('prime2', String, nullable=False),
    Column('ecm', String, nullable=False),
+   Column('mpqs', String, nullable=False),
    Column('device', String, default=device),
    Column('time_added', DateTime, default=datetime.utcnow))
 
@@ -43,8 +45,8 @@ def file_len(filename):
 
 def export_results(batch_results, input_file=input_file, batch_size=batch_size):
     for result in batch_results:
-        ins = results.insert().values(number=result[0], prime1=result[1][0][1],
-        prime2=result[1][0][2], ecm=result[1][0][3])
+        ins = results.insert().values(number=result[0], prime1=result[1][0][2],
+        prime2=result[1][0][3], ecm=result[1][0][1], mpqs=result[1][1][1])
         conn = db.connect()
         r = conn.execute(ins)
     # delete batch from primeproducts.txt
@@ -55,18 +57,21 @@ def export_results(batch_results, input_file=input_file, batch_size=batch_size):
             f.write(remaining_line)
 
 def ecm(n):
-    for i in range(10):
-        if i > 3:
-            print(i)
-        start = time()
-        result = lenstra(n, 1000*10**i)
-        speed = time() - start
-        if result is not False:
-            p1, p2 = min(result, int(n/result)), max(result, int(n/result))
-            return [p1, p2, speed]
-    return [False, speed]
+    start = time()
+    output = check_output(['python', '-m', 'primefac', '-m=ecm ', str(n)])
+    speed = time() - start
+    _, p1, p2 = output.strip('\n').split(' ')
+    return [speed, p1, p2]
 
-algorithms = {'ecm':ecm}
+def mpqs(n):
+    start = time()
+    output = check_output(['python', '-m', 'primefac', '-m=mpqs ', str(n)])
+    speed = time() - start
+    _, p1, p2 = output.strip('\n').split(' ')
+    return [speed, p1, p2]
+
+
+algorithms = {'ecm':ecm, 'mpqs':mpqs}
 
 def speedtest(algorithms=algorithms, device=device):
     batch = import_batch()
@@ -79,7 +84,7 @@ def speedtest(algorithms=algorithms, device=device):
         batch_results.append([str(number), algorithm_results])
     export_results(batch_results)
 
-#########################################
+#######################################
 
 if __name__ == '__main__':
     file_length = file_len(input_file)
