@@ -18,9 +18,6 @@ def file_len(filename):
         i = None
         for i, l in enumerate(f):
             pass
-        if i is None:
-            print('file empty')
-            return 0
     return i + 1
 
 def get_number(bit_len=128):
@@ -68,7 +65,6 @@ def sort_em(number_file=number_file):
     numbers = sorted(numbers)
     i = 1
     while i < len(numbers):
-        print(numbers[i], i)
         if numbers[i] == numbers[i-1]:
             del numbers[i]
             i -= 1
