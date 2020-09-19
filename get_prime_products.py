@@ -8,14 +8,14 @@ import geckodriver_autoinstaller
 batch_size = 5
 per_bit = 1
 min_length = 8
-max_length = 12
+max_length = 67
 number_file = 'primeproducts.txt'
 
 geckodriver_autoinstaller.install()  # Check if the current version of geckodriver exists and if it doesn't exist, download it automatically, then add geckodriver to path
 
 def file_len(filename):
     with open(filename) as f:
-        i = None
+        i = -1
         for i, l in enumerate(f):
             pass
     return i + 1

@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, 
 
 #########################################
 
-batch_size = 5
+batch_size = 2
 input_file = 'primeproducts.txt'
 device = 'MacBook Pro (Mid 2014): 2.8 GHz Dual-Core Intel Core i5'
 
@@ -79,7 +79,8 @@ def speedtest(algorithms=algorithms, device=device):
     for number in batch:
         algorithm_results = []
         for algorithm in algorithms:
-            p1, p2, speed = algorithms[algorithm](number)
+            speed, p1, p2 = algorithms[algorithm](number)
+            print(str(algorithm) + ': ' + str(round(speed,2)))
             algorithm_results.append([algorithm, str(p1), str(p2), speed])
         batch_results.append([str(number), algorithm_results])
     export_results(batch_results)
