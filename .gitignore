@@ -1,7 +1,7 @@
-geckodriver.log
-primeproducts.txt
-
 *~
 
-ecm.txt
-mpqs.txt
+*.txt
+!results/*.txt
+
+__pycache__/
+.DS_Store
