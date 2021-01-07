@@ -1,7 +1,11 @@
 *~
 
 *.txt
+!requirements*.txt
 results
+
+venv2/
+venv3/
 
 __pycache__/
 .DS_Store
