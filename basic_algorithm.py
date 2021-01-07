@@ -1,3 +1,6 @@
+# basic_algorithm.py
+#!/usr/bin/env python
+
 from math import sqrt
 from argparse import ArgumentParser
 

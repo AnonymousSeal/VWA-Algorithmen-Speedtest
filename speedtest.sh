@@ -1,3 +1,4 @@
+# speedtest.sh
 #!/usr/bin/env bash
 
 inputfile="primeproducts.txt"
